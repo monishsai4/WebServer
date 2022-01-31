@@ -13,6 +13,14 @@ def genFrames():
         if not success:
             break
         else:
+            detector = cv2.CascadeClassifier('haarcascade_frontalface_default.xml') 
+            gray = cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY)
+            faces = detector.detectMultiScale(gray,1.1,4)
+            for (x,y,w,h) in faces:
+               cv2.rectangle(frame,(x,y),(x+w, y+h),(255,255,0),2)
+               roi_gray = gray[y:y+h,x:x+w]
+               roi_color = frame[y:y+h,x:x+w]
+               
             ret, buffer = cv2.imencode('.jpg',frame)
             frame = buffer.tobytes()
             yield (b'--frame\r\n'
@@ -24,5 +32,4 @@ def Streaming():
 
 
 if __name__ == '__main__':
-   app.run(debug = True)
-   
+   app.run()
